@@ -4,13 +4,12 @@
 LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 volatile int rpmcount[2] = {0, 0};
-int timeold[2] = {0, 0};
 const float circumference = 2200.0; //바퀴둘레 : 2200mm
 const int hall_num[2] = {12, 8}; //홀센서 갯수
-int lcd_update_before = 0;
-int lcd_update_interval = 300; // 300ms마다 업데이트
-int rpm_update_before[2] = {0, 0};
-int rpm_update_interval = 1000; //300ms마다 업데이트
+unsigned int lcd_update_before = 0;
+const int lcd_update_interval = 300; // 300ms마다 업데이트
+unsigned int rpm_update_before[2] = {0, 0};
+const int rpm_update_interval = 1000; //300ms마다 업데이트
 float rpm_arr[2] = {0.0, 0.0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
@@ -78,10 +77,9 @@ void lcd_update(float rpm[]) {
 
 void rpm_calc(int i) {
   if ( (millis() - rpm_update_before[i]) >= rpm_update_interval ) {
-    rpm_update_before[i] = millis();
     detachInterrupt(i);
-    rpm_arr[i] = (60000.0 * rpmcount[i]) / ( hall_num[i] * (millis() - timeold[i]) );
-    timeold[i] = millis(); // 기준시간 리셋
+    rpm_arr[i] = (60000.0 * rpmcount[i]) / ( hall_num[i] * (millis() - rpm_update_before[i]) );
+    rpm_update_before[i] = millis();
     rpmcount[i] = 0;
     attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
   }
