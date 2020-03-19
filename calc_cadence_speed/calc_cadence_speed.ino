@@ -7,6 +7,7 @@ volatile int rpmcount[2] = {0, 0};
 int timeold[2] = {0, 0};
 const long circumference = 220;
 const int hall_num[2] = {12, 8}; //홀센서 갯수
+int lcd_update_before = 0;
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
   rpmcount[0]++;
@@ -48,21 +49,24 @@ void lcd_init() {
 }
 
 void lcd_update(int rpm[]) {
-  lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
-  lcd.print("Cadence");
-  lcd.setCursor(5, 2);
-  lcd.print("   "); // LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
-  lcd.setCursor(5, 2);   // 5,2에서 글쓰기 시작
-  lcd.print(rpm[0]);
-  lcd.setCursor(9, 2);
-  lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
-  lcd.setCursor(5, 3);
-  lcd.print("   ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
-  lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
-  int bikespeed = ((rpm[1] * circumference * 60 ) / 100000);
-  lcd.print(bikespeed);
-  lcd.setCursor(9, 3);
-  lcd.print("km/h");
+  if ((millis() - lcd_update_before) >= 300){
+    lcd_update_before = millis()
+    lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
+    lcd.print("Cadence");
+    lcd.setCursor(5, 2);
+    lcd.print("   "); // LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
+    lcd.setCursor(5, 2);   // 5,2에서 글쓰기 시작
+    lcd.print(rpm[0]);
+    lcd.setCursor(9, 2);
+    lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
+    lcd.setCursor(5, 3);
+    lcd.print("   ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
+    lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
+    int bikespeed = ((rpm[1] * circumference * 60 ) / 100000);
+    lcd.print(bikespeed);
+    lcd.setCursor(9, 3);
+    lcd.print("km/h");
+  }
 }
 
 int rpm_calc(int rpm, int i) {
