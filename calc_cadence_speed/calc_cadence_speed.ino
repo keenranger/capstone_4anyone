@@ -78,6 +78,7 @@ void lcd_update(int rpm[]) {
 
 void rpm_calc(int i) {
   if ((millis() = rpm_update_before[i]) >= rpm_update_interval){
+    rpm_update_before[i] = millis();
     detachInterrupt(i);
     rpm_arr[i] = int((60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i])));
     timeold[i] = millis(); // 기준시간 리셋
