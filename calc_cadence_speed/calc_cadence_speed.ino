@@ -9,6 +9,9 @@ const long circumference = 220;
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 int lcd_update_before = 0;
 int lcd_update_interval = 300; // 300ms마다 업데이트
+int rpm_update_before[2] = {0, 0};
+int rpm_update_interval = 300; //300ms마다 업데이트
+int rpm_arr[2] = {0, 0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
   rpmcount[0]++;
@@ -17,7 +20,7 @@ void rpm_fun2() {
   rpmcount[1]++;
 }
 void (*rpm_fun[2])() = {rpm_fun1, rpm_fun2};    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언, 첫 번째 요소에 함수의 메모리 주소 저장
-int rpm_calc(int rpm, int i);
+void rpm_calc(int i);
 void lcd_init();
 void lcd_update(int rpm[]);
 
@@ -30,9 +33,8 @@ void setup() {
 }
 
 void loop() {
-  int rpm_arr[2] = {0, 0};
   for (int i = 0; i < 2; i++) {
-    rpm_arr[i] = rpm_calc(rpm_arr[i], i);
+    rpm_calc(i);
   }
   lcd_update(rpm_arr);
 }
@@ -74,11 +76,12 @@ void lcd_update(int rpm[]) {
   }
 }
 
-int rpm_calc(int rpm, int i) {
-  detachInterrupt(i);
-  rpm = (60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i]));
-  timeold[i] = millis(); // 기준시간 리셋
-  rpmcount[i] = 0;
-  attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
-  return rpm;
+void rpm_calc(int i) {
+  if ((millis() = rpm_update_before[i]) >= rpm_update_interval){
+    detachInterrupt(i);
+    rpm_arr[i] = (60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i]));
+    timeold[i] = millis(); // 기준시간 리셋
+    rpmcount[i] = 0;
+    attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
+  }
 }
