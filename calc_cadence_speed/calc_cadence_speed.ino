@@ -4,7 +4,7 @@
 LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 volatile int rpmcount[2] = {0, 0};
-const float circumference = 2200.0; //바퀴둘레 : 2200mm
+const float circumference = 2.2; //바퀴둘레 : 2.2mm
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 unsigned long lcd_update_before = 0;
 const int lcd_update_interval = 300; // 300ms마다 업데이트
@@ -67,7 +67,7 @@ void lcd_update(float rpm[]) {
     lcd.setCursor(5, 3);
     lcd.print("    ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
     lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
-    float bikespeed = (rpm[1] * circumference * 60 ) / (1000 * 1000);
+    float bikespeed = ((rpm[1] * circumference * 60 ) /1000);
     lcd.print((int)bikespeed);
     Serial.println(bikespeed);
     lcd.setCursor(9, 3);
