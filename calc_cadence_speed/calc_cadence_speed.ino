@@ -53,7 +53,7 @@ void lcd_init() {
   delay(500);
 }
 
-void lcd_update(int rpm[]) {
+void lcd_update(float rpm[]) {
   if ((millis() - lcd_update_before) >= lcd_update_interval) {
     lcd_update_before = millis();
     lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
