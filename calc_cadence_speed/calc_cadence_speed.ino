@@ -5,12 +5,12 @@ LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 char
 
 volatile int rpmcount[2] = {0, 0};
 int timeold[2] = {0, 0};
-const long circumference = 220;
+const long circumference = 2200; //바퀴둘레 : 2200mm
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 int lcd_update_before = 0;
 int lcd_update_interval = 300; // 300ms마다 업데이트
 int rpm_update_before[2] = {0, 0};
-int rpm_update_interval = 300; //300ms마다 업데이트
+int rpm_update_interval = 1000; //300ms마다 업데이트
 int rpm_arr[2] = {0, 0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
@@ -54,7 +54,7 @@ void lcd_init() {
 }
 
 void lcd_update(int rpm[]) {
-  if ((millis() - lcd_update_before) >= lcd_update_interval){
+  if ((millis() - lcd_update_before) >= lcd_update_interval) {
     lcd_update_before = millis();
     lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
     lcd.print("Cadence");
@@ -70,7 +70,7 @@ void lcd_update(int rpm[]) {
     lcd.setCursor(5, 3);
     lcd.print("   ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
     lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
-    int bikespeed = int((rpm[1] * circumference * 60 ) / 100000);
+    int bikespeed = int( (rpm[1] * circumference * 60 ) / (1000 * 1000));
     lcd.print(bikespeed);
     Serial.println(bikespeed);
     lcd.setCursor(9, 3);
@@ -79,10 +79,10 @@ void lcd_update(int rpm[]) {
 }
 
 void rpm_calc(int i) {
-  if ((millis() = rpm_update_before[i]) >= rpm_update_interval){
+  if ( (millis() - rpm_update_before[i]) >= rpm_update_interval ) {
     rpm_update_before[i] = millis();
     detachInterrupt(i);
-    rpm_arr[i] = int((60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i])));
+    rpm_arr[i] = int( 60000 * (rpmcount[i] / hall_num[i]) / (millis() - timeold[i]) );
     timeold[i] = millis(); // 기준시간 리셋
     rpmcount[i] = 0;
     attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
