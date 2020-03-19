@@ -28,11 +28,11 @@ void setup() {
 }
 
 void loop() {
-  int rpm[2] = {0, 0};
+  int rpm_arr[2] = {0, 0};
   for (int i = 0; i < 2; i++) {
-    rpm[i] = rpm_calc(rpm[i], i);
+    rpm_arr[i] = rpm_calc(rpm_arr[i], i);
   }
-  lcd_update(rpm);
+  lcd_update(rpm_arr);
 }
 
 void lcd_init() {
