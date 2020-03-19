@@ -15,11 +15,9 @@ float rpm_arr[2] = {0.0, 0.0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
   rpmcount[0]++;
-  Serial.println("interrupt1");
 }
 void rpm_fun2() {
   rpmcount[1]++;
-  Serial.println("interrupt2");
 }
 void (*rpm_fun[2])() = {rpm_fun1, rpm_fun2};    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언, 첫 번째 요소에 함수의 메모리 주소 저장
 void rpm_calc(int i);
@@ -82,7 +80,7 @@ void rpm_calc(int i) {
   if ( (millis() - rpm_update_before[i]) >= rpm_update_interval ) {
     rpm_update_before[i] = millis();
     detachInterrupt(i);
-    rpm_arr[i] = 60000.0 * rpmcount[i] / ( hall_num[i] * (millis() - timeold[i]) );
+    rpm_arr[i] = (60000.0 * rpmcount[i]) / ( hall_num[i] * (millis() - timeold[i]) );
     timeold[i] = millis(); // 기준시간 리셋
     rpmcount[i] = 0;
     attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
