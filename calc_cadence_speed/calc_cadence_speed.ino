@@ -79,7 +79,7 @@ void lcd_update(int rpm[]) {
 void rpm_calc(int i) {
   if ((millis() = rpm_update_before[i]) >= rpm_update_interval){
     detachInterrupt(i);
-    rpm_arr[i] = (60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i]));
+    rpm_arr[i] = int((60000 * rpmcount[i]) / (hall_num[i] * (millis() - timeold[i])));
     timeold[i] = millis(); // 기준시간 리셋
     rpmcount[i] = 0;
     attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
