@@ -9,7 +9,7 @@ const int hall_num[2] = {12, 8}; //홀센서 갯수
 unsigned long lcd_update_before = 0;
 const int lcd_update_interval = 300; // 300ms마다 업데이트
 unsigned long rpm_update_before[2] = {0, 0};
-const int rpm_update_interval = 1000; //300ms마다 업데이트
+const int rpm_update_interval = 1000; //1000ms마다 업데이트
 float rpm_arr[2] = {0.0, 0.0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
