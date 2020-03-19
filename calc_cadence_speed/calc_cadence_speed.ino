@@ -15,9 +15,11 @@ int rpm_arr[2] = {0, 0};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
   rpmcount[0]++;
+  Serial.println("interrupt1");
 }
 void rpm_fun2() {
   rpmcount[1]++;
+  Serial.println("interrupt2");
 }
 void (*rpm_fun[2])() = {rpm_fun1, rpm_fun2};    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언, 첫 번째 요소에 함수의 메모리 주소 저장
 void rpm_calc(int i);
@@ -68,7 +70,7 @@ void lcd_update(int rpm[]) {
     lcd.setCursor(5, 3);
     lcd.print("   ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
     lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
-    int bikespeed = ((rpm[1] * circumference * 60 ) / 100000);
+    int bikespeed = int((rpm[1] * circumference * 60 ) / 100000);
     lcd.print(bikespeed);
     Serial.println(bikespeed);
     lcd.setCursor(9, 3);
