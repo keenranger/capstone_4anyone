@@ -6,8 +6,6 @@ LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 char
 volatile int rpmcount[2] = {0, 0};
 const float circumference = 2.2; //바퀴둘레 : 2.2mm
 const int hall_num[2] = {12, 8}; //홀센서 갯수
-unsigned long lcd_update_before = 0;
-const int lcd_update_interval = 300; // 300ms마다 업데이트
 unsigned long rpm_update_before = 0;
 const int rpm_update_interval = 1000; //1000ms마다 업데이트
 float rpm_arr[2] = {0.0, 0.0};
@@ -19,23 +17,22 @@ void rpm_fun2() {
   rpmcount[1]++;
 }
 
-void rpm_calc();
+int rpm_calc();
 void lcd_init();
 void lcd_update(float rpm[]);
 
 void setup() {
   Serial.begin(115200);
   lcd_init();
-  for (int i = 0; i < 2; i++) {
-    attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀 홀센서에 자석이 들어오고 나갈떄 FALLING이 일어나게 됨
-  }
+  attachInterrupt(0, rpm_fun1(), FALLING); // 인터럽트 0->2번핀 1->3번핀
+  attachInterrupt(1, rpm_fun2(), FALLING); // 인터럽트 0->2번핀 1->3번핀
 }
 
 void loop() {
-  for (int i = 0; i < 2; i++) {
-    rpm_calc(i);
+  if(rpm_calc){
+      lcd_update(rpm_arr);
   }
-  lcd_update(rpm_arr);
+  
 }
 
 void lcd_init() {
@@ -51,8 +48,6 @@ void lcd_init() {
 }
 
 void lcd_update(float rpm[]) {
-  if ((millis() - lcd_update_before) >= lcd_update_interval) {
-    lcd_update_before = millis();
     lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
     lcd.print("Cadence");
     Serial.print("rpm : ");
@@ -72,10 +67,9 @@ void lcd_update(float rpm[]) {
     Serial.println(bikespeed);
     lcd.setCursor(9, 3);
     lcd.print("km/h");
-  }
 }
 
-void rpm_calc() {
+int rpm_calc() {
   if ( (millis() - rpm_update_before) >= rpm_update_interval ) {
     detachInterrupt(0);
     detachInterrupt(1);
@@ -85,7 +79,11 @@ void rpm_calc() {
     rpmcount[0] = 0;
     rpmcount[1] = 0;
     rpm_update_before = millis();
-    attachInterrupt(i, rpm_fun[0], FALLING); // 인터럽트 0->2번핀 1->3번핀
-    attachInterrupt(i, rpm_fun[1], FALLING); // 인터럽트 0->2번핀 1->3번핀
+    attachInterrupt(0, rpm_fun1(), FALLING); // 인터럽트 0->2번핀 1->3번핀
+    attachInterrupt(1, rpm_fun2(), FALLING); // 인터럽트 0->2번핀 1->3번핀
+    return 1;
+  }
+  else{
+      return 0;
   }
 }
