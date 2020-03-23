@@ -2,13 +2,13 @@
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
-////////속도 측정용///////////////////////
+
 volatile int rpmcount[2] = {0, 0};
 const float circumference = 2.2; //바퀴둘레 : 2.2mm
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 unsigned long lcd_update_before = 0;
 const int lcd_update_interval = 300; // 300ms마다 업데이트
-unsigned long rpm_update_before[2] = {0, 0};
+unsigned long rpm_update_before = 0;
 const int rpm_update_interval = 1000; //1000ms마다 업데이트
 float rpm_arr[2] = {0.0, 0.0};
 
@@ -18,11 +18,10 @@ void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
 void rpm_fun2() {
   rpmcount[1]++;
 }
-void (*rpm_fun[2])() = {rpm_fun1, rpm_fun2};    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언, 첫 번째 요소에 함수의 메모리 주소 저장
-int rpm_calc(int i);
+
+void rpm_calc();
 void lcd_init();
 void lcd_update(float rpm[]);
-void rpm_check();
 
 void setup() {
   Serial.begin(115200);
@@ -34,9 +33,7 @@ void setup() {
 
 void loop() {
   for (int i = 0; i < 2; i++) {
-    if (rpm_calc(i)){
-        rpm_check(i)
-    }
+    rpm_calc(i);
   }
   lcd_update(rpm_arr);
 }
@@ -78,20 +75,17 @@ void lcd_update(float rpm[]) {
   }
 }
 
-int rpm_calc(int i) {
-  if ( (millis() - rpm_update_before[i]) >= rpm_update_interval ) {
-    detachInterrupt(i);
-    rpm_arr[i] = (60000.0 * rpmcount[i]) / ( hall_num[i] * (millis() - rpm_update_before[i]) );
-    rpm_update_before[i] = millis();
-    rpmcount[i] = 0;
-    attachInterrupt(i, rpm_fun[i], FALLING); // 인터럽트 0->2번핀 1->3번핀
-    return 1;
+void rpm_calc() {
+  if ( (millis() - rpm_update_before) >= rpm_update_interval ) {
+    detachInterrupt(0);
+    detachInterrupt(1);
+    time_interval = millis() - rpm_update_before
+    rpm_arr[0] = (60000.0 * rpmcount[0]) / ( hall_num[0] * time_interval );
+    rpm_arr[1] = (60000.0 * rpmcount[1]) / ( hall_num[1] * time_interval );
+    rpmcount[0] = 0;
+    rpmcount[1] = 0;
+    rpm_update_before = millis();
+    attachInterrupt(i, rpm_fun[0], FALLING); // 인터럽트 0->2번핀 1->3번핀
+    attachInterrupt(i, rpm_fun[1], FALLING); // 인터럽트 0->2번핀 1->3번핀
   }
-  else {
-      return 0;
-  }
-}
-
-void rpm_check() {
-
 }
