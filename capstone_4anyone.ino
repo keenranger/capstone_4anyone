@@ -19,9 +19,10 @@ void rpm_fun2() {
   rpmcount[1]++;
 }
 void (*rpm_fun[2])() = {rpm_fun1, rpm_fun2};    // int형 반환값, int형 매개변수 두 개가 있는 함수 포인터 배열 선언, 첫 번째 요소에 함수의 메모리 주소 저장
-void rpm_calc(int i);
+int rpm_calc(int i);
 void lcd_init();
 void lcd_update(float rpm[]);
+void rpm_check();
 
 void setup() {
   Serial.begin(115200);
@@ -34,7 +35,7 @@ void setup() {
 void loop() {
   for (int i = 0; i < 2; i++) {
     if (rpm_calc(i)){
-        
+        rpm_check(i)
     }
   }
   lcd_update(rpm_arr);
@@ -89,4 +90,8 @@ int rpm_calc(int i) {
   else {
       return 0;
   }
+}
+
+void rpm_check() {
+
 }
