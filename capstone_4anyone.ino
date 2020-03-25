@@ -98,7 +98,7 @@ float* rpm_calc() {
 
 void rpm_check(float rpm_arr[]){
     if (rpm_arr[0] == 0.0){ //페달링 않는 중이라면
-        if (rpm_arr[1] == 0/0){ //거기에 정지까지 한 상태라면
+        if (rpm_arr[1] == 0.0){ //거기에 정지까지 한 상태라면
             if (!recently_stopped){
                 speed -= 1;
                 EEPROM.write(64, speed);
