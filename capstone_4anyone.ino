@@ -91,23 +91,17 @@ float* rpm_calc() {
         return rpm_arr;
     }
     else { //시간이 아직 모자르면 쓰레기값 보내기
-        float temp[2] ={-1 ,-1};
-        return temp;
+        rpm_arr[0] = -1;
+        return rpm_arr;
     }
 }
 
 void rpm_check(float rpm_arr[]){
-    if (rpm_arr[0] == 0.0){ //페달링 않는 중이라면
-        if (rpm_arr[1] == 0.0){ //거기에 정지까지 한 상태라면
-            if (!recently_stopped){
-                speed -= 1;
-                EEPROM.write(64, speed);
-                recently_stopped = true;
-            }
-
-        }
-        else { //페달링은 않지만 바퀴는 움직이는 중이라면
-
+    if ( (rpm_arr[0] == 0.0) && (rpm_arr[1] == 0.0) ){ //페달링 않고 정지한다면
+        if (!recently_stopped){
+            speed -= 1;
+            EEPROM.write(64, speed);
+            recently_stopped = true;
         }
     }
     else{
