@@ -30,6 +30,9 @@ void setup() {
   attachInterrupt(0, rpm_fun1, FALLING); // 인터럽트 0->2번핀 1->3번핀
   attachInterrupt(1, rpm_fun2, FALLING); // 인터럽트 0->2번핀 1->3번핀
   speed = EEPROM.read(64);
+  if ( (speed < 1) || (speed > 10) ){//만약 speed가 초기화안된상태라면
+    speed = 3;
+  }
 }
 
 void loop() {
