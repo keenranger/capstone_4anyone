@@ -97,8 +97,10 @@ float* rpm_calc() {
 
 void rpm_check(float rpm_arr[]){
     if ( (rpm_arr[0] == 0.0) && (rpm_arr[1] == 0.0) ){ //페달링 않고 정지한다면
-        if (!recently_stopped){
-            speed -= 1;
+        if (!recently_stopped){ //단이 3(1단)보다 크고, 최근에 멈추지 않았다면
+            if ( speed > 3){
+                speed -= 1;
+            }
             EEPROM.write(64, speed);
             recently_stopped = true;
         }
