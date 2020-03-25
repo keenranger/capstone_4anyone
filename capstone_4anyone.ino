@@ -53,25 +53,24 @@ void lcd_init() {
 }
 
 void lcd_update(float rpm_arr[]) {
-    lcd.setCursor(5, 1);   // 3,1에서 글쓰기 시작
+    lcd.clear();
+    lcd.setCursor(1, 1);   // 3,1에서 글쓰기 시작
     lcd.print("Cadence");
-    Serial.print("rpm : ");
-    lcd.setCursor(5, 2);
-    lcd.print("   "); // LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
-    lcd.setCursor(5, 2);   // 5,2에서 글쓰기 시작
+    lcd.setCursor(11, 1);   // 5,2에서 글쓰기 시작
     lcd.print((int)rpm_arr[0]);
-    Serial.println(rpm_arr[0]);
-    lcd.setCursor(9, 2);
+    lcd.setCursor(15, 1);
     lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
-    Serial.print("speed : ");
-    lcd.setCursor(5, 3);
-    lcd.print("    ");    //LCD에 새로운 rpm값을 계속 표시해주기 위해서 이전에 표시되었던 내용을 지워주는 과정
-    lcd.setCursor(5, 3);   // 5,3에서 글쓰기 시작
+    lcd.setCursor(1, 2);   // 5,3에서 글쓰기 시작
+    lcd.print("Velocity");
     float bike_velocity = ((rpm_arr[1] * circumference * 60 ) /1000);
+    lcd.setCursor(11, 1);
     lcd.print((int)bike_velocity);
-    Serial.println(bike_velocity);
-    lcd.setCursor(9, 3);
+    lcd.setCursor(15, 2);
     lcd.print("km/h");
+    lcd.setCursor(1, 3);
+    lcd.print("SPD");
+    lcd.setCursor(11, 3);
+    lcd.print(speed);
 }
 
 float* rpm_calc() {
