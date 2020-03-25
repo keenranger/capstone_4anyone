@@ -8,7 +8,7 @@ volatile int rpmcount[2] = {0, 0};
 const float circumference = 2.2; //바퀴둘레 : 2.2m
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 const int rpm_update_interval = 1000; //1000ms마다 업데이트
-boolean recently_stopped = false; //달리다가 최근에 멈췄어?
+boolean recently_stopped = true; //달리다가 최근에 멈췄어? 켰을때 멈춘상태로 시작이므로 true로
 int speed; //setup에서 초기화 예정, 단수
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
@@ -63,7 +63,7 @@ void lcd_update(float rpm_arr[]) {
     lcd.setCursor(1, 2);   // 5,3에서 글쓰기 시작
     lcd.print("Velocity");
     float bike_velocity = ((rpm_arr[1] * circumference * 60 ) /1000);
-    lcd.setCursor(11, 1);
+    lcd.setCursor(11, 2);
     lcd.print((int)bike_velocity);
     lcd.setCursor(15, 2);
     lcd.print("km/h");
