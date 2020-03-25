@@ -8,6 +8,7 @@ volatile int rpmcount[2] = {0, 0};
 const float circumference = 2.2; //바퀴둘레 : 2.2m
 const int hall_num[2] = {12, 8}; //홀센서 갯수
 const int rpm_update_interval = 1000; //1000ms마다 업데이트
+const int minimum_rpm = 10; //10rpm 이하면 달리다가 발가만히두는거라고생각
 boolean recently_stopped = true; //달리다가 최근에 멈췄어? 켰을때 멈춘상태로 시작이므로 true로
 int speed; //setup에서 초기화 예정, 단수
 
@@ -30,7 +31,7 @@ void setup() {
   attachInterrupt(0, rpm_fun1, FALLING); // 인터럽트 0->2번핀 1->3번핀
   attachInterrupt(1, rpm_fun2, FALLING); // 인터럽트 0->2번핀 1->3번핀
   speed = EEPROM.read(64);
-  if ( (speed < 1) || (speed > 10) ){//만약 speed가 초기화안된상태라면
+  if ( (speed < 1) || (speed > 10) ){//만약 speed(1~10)가 초기화안된상태라면
     speed = 3;
   }
 }
@@ -65,7 +66,7 @@ void lcd_update(float rpm_arr[]) {
     lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
     lcd.setCursor(1, 2);   // 5,3에서 글쓰기 시작
     lcd.print("Velocity");
-    float bike_velocity = ((rpm_arr[1] * circumference * 60 ) /1000);
+    float bike_velocity = ((rpm_arr[1] * circumference * 60 ) /1000); //60초동안, km니까 나누기천
     lcd.setCursor(11, 2);
     lcd.print((int)bike_velocity);
     lcd.setCursor(15, 2);
@@ -83,7 +84,7 @@ float* rpm_calc() {
         detachInterrupt(0);
         detachInterrupt(1);
         unsigned long time_interval = millis() - rpm_update_before;
-        rpm_arr[0] = (60000.0 * rpmcount[0]) / ( hall_num[0] * time_interval );
+        rpm_arr[0] = (60000.0 * rpmcount[0]) / ( hall_num[0] * time_interval );//ms -> min = 60000곱함
         rpm_arr[1] = (60000.0 * rpmcount[1]) / ( hall_num[1] * time_interval );
         rpmcount[0] = 0;
         rpmcount[1] = 0;
@@ -100,8 +101,8 @@ float* rpm_calc() {
 
 void rpm_check(float rpm_arr[]){
     if ( (rpm_arr[0] == 0.0) && (rpm_arr[1] == 0.0) ){ //페달링 않고 정지한다면
-        if (!recently_stopped){ //단이 3(1단)보다 크고, 최근에 멈추지 않았다면
-            if ( speed > 3){
+        if (!recently_stopped){ //최근에 멈추지 않았다면
+            if ( speed > 3){//1단에서 더낮출수없음 : 3초과면 낮춤 
                 speed -= 1;
             }
             EEPROM.write(64, speed);
