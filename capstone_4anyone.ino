@@ -27,9 +27,9 @@ void button_check();
 void setup() {
   Serial.begin(115200);
   lcd_init();
-  attachInterrupt(0, rpm_fun1(), FALLING); // 인터럽트 0->2번핀 1->3번핀
-  attachInterrupt(1, rpm_fun2(), FALLING); // 인터럽트 0->2번핀 1->3번핀
-  speed = EEPROM.read(64)
+  attachInterrupt(0, rpm_fun1, FALLING); // 인터럽트 0->2번핀 1->3번핀
+  attachInterrupt(1, rpm_fun2, FALLING); // 인터럽트 0->2번핀 1->3번핀
+  speed = EEPROM.read(64);
 }
 
 void loop() {
@@ -80,18 +80,18 @@ float* rpm_calc() {
     if ( (millis() - rpm_update_before) >= rpm_update_interval ) { //시간이 지났으면 rpm 계산하기
         detachInterrupt(0);
         detachInterrupt(1);
-        time_interval = millis() - rpm_update_before
+        unsigned long time_interval = millis() - rpm_update_before;
         rpm_arr[0] = (60000.0 * rpmcount[0]) / ( hall_num[0] * time_interval );
         rpm_arr[1] = (60000.0 * rpmcount[1]) / ( hall_num[1] * time_interval );
         rpmcount[0] = 0;
         rpmcount[1] = 0;
         rpm_update_before = millis();
-        attachInterrupt(0, rpm_fun1(), FALLING); // 인터럽트 0->2번핀 1->3번핀
-        attachInterrupt(1, rpm_fun2(), FALLING); // 인터럽트 0->2번핀 1->3번핀
+        attachInterrupt(0, rpm_fun1, FALLING); // 인터럽트 0->2번핀 1->3번핀
+        attachInterrupt(1, rpm_fun2, FALLING); // 인터럽트 0->2번핀 1->3번핀
         return rpm_arr;
     }
     else { //시간이 아직 모자르면 쓰레기값 보내기
-        float temp[2] ={-1 ,-1}
+        float temp[2] ={-1 ,-1};
         return temp;
     }
 }
@@ -104,6 +104,9 @@ void rpm_check(float rpm_arr[]){
                 EEPROM.write(64, speed);
                 recently_stopped = true;
             }
+
+        }
+        else { //페달링은 않지만 바퀴는 움직이는 중이라면
 
         }
     }
