@@ -191,9 +191,11 @@ void button_check(int i) {
 void queue_processor(int i) {
   if (button_queue[i] == true) {
     switch (i) {
-      case 0:
+      case 0://위로버튼
         auto_mode = false;
-        speed += 1;
+        if (speed < 10){
+          speed += 1;
+        }
       case 1:
         if (auto_mode == false) { //수동 -> 자동일때는
           if (speed <= 2) { //L1, L2일땐 A1으로
@@ -209,7 +211,9 @@ void queue_processor(int i) {
         }
       case 2:
         auto_mode = false;
-        speed -= 1;
+        if (speed > 1){
+          speed -= 1;
+        }
       default:
         button_queue[i] = false;
         break;
