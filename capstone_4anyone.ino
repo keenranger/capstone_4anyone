@@ -216,23 +216,23 @@ void gear_selector(){
   static unsigned long gear_select_before = 0;
   if ( (millis() - gear_select_before) >= gear_select_interval ) { 
 //    speed_gear[speed][0]
-    if (speed_gear[speed][0] > speed_gear[last_speed][0]){//앞바퀴 기어가 올라가는 거라면
-      front_servo.write(front_heighten_degree[speed_gear[speed][0] - 1]);
+    if (speed_gear[speed - 1][0] > speed_gear[last_speed - 1][0]){//앞바퀴 기어가 올라가는 거라면
+      front_servo.write(front_heighten_degree[speed_gear[speed - 1][0] - 1]);
     }
-    else if (speed_gear[speed][0] < speed_gear[last_speed][0]){//앞바퀴 기어가 내려가는 거라면
-      front_servo.write(front_lower_degree[speed_gear[speed][0]]);
+    else if (speed_gear[speed - 1][0] < speed_gear[last_speed -1][0]){//앞바퀴 기어가 내려가는 거라면
+      front_servo.write(front_lower_degree[speed_gear[speed - 1][0]]);
     }
     else{//앞기어가 변하지않았다면
-      front_servo.write(front_degree[speed_gear[speed][0]]);
+      front_servo.write(front_degree[speed_gear[speed - 1][0]]);
     }
-    if (speed_gear[speed][1] > speed_gear[last_speed][1]){//뒷바퀴 기어가 올라가는 거라면
-      rear_servo.write(rear_heighten_degree[speed_gear[speed][1] -1]);
+    if (speed_gear[speed - 1][1] > speed_gear[last_speed - 1][1]){//뒷바퀴 기어가 올라가는 거라면
+      rear_servo.write(rear_heighten_degree[speed_gear[speed - 1][1] -1]);
     }
-    else if (speed_gear[speed][1] < speed_gear[last_speed][1]){//뒷바퀴 기어가 내려가는 거라면
-      rear_servo.write(rear_lower_degree[speed_gear[speed][1]]);
+    else if (speed_gear[speed - 1][1] < speed_gear[last_speed - 1][1]){//뒷바퀴 기어가 내려가는 거라면
+      rear_servo.write(rear_lower_degree[speed_gear[speed - 1][1]]);
     }
     else{//뒷기어가 변하지않았다면
-      rear_servo.write(rear_degree[speed_gear[speed][1]]);
+      rear_servo.write(rear_degree[speed_gear[speed - 1][1]]);
     }
     last_speed = speed; //마지막으로 lastspeed 에 현재 speed 넣어줌
     gear_select_before = millis();
