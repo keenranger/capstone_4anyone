@@ -200,6 +200,8 @@ void queue_processor(int i) {
         if (speed < 10){
           speed += 1;
         }
+        button_queue[i] = false;
+        break;
       case 1:
         if (auto_mode == false) { //수동 -> 자동일때는
           if (speed <= 2) { //L1, L2일땐 A1으로
@@ -213,12 +215,13 @@ void queue_processor(int i) {
         else { //자동 -> 수동일때는
           auto_mode = false;
         }
+        button_queue[i] = false;
+        break;
       case 2:
         auto_mode = false;
         if (speed > 1){
           speed -= 1;
         }
-      default:
         button_queue[i] = false;
         break;
     }
