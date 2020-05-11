@@ -184,6 +184,8 @@ void button_check(int i) {
       button_state[i] = reading;
       if (button_state[i] == false) { //LOW일때 작업 할당 -> pull-up 저항있음
         button_queue[i] = true;
+        Serial.print(i+1);
+        Serial.println(" button pressed!");
       }
     }
   }
