@@ -81,6 +81,8 @@ void loop() {
   if (rpm_arr[0] >= 0) {
     stop_check(rpm_arr);
     lcd_update(rpm_arr);
+    Serial.print("SPD : ");
+    Serial.println(speed);
     if (auto_mode == true) { //자동 모드일 때만 자동 변속
       rpm_check(rpm_arr);
     }
