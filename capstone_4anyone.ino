@@ -38,6 +38,7 @@ int front_heighten_degree[2] = {68, 54};
 int rear_degree[7] = {57, 65, 75, 85, 98, 121, 145};
 int rear_lower_degree[6] = {57, 65, 73, 85, 98, 121};
 int rear_heighten_degree[6] = {65, 77, 85, 98, 121, 145};
+const int gear_select_interval = 200; //200ms마다 기어선택
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
   rpmcount[0]++;
@@ -53,6 +54,7 @@ void stop_check(float rpm_arr[]);
 void rpm_check(float rpm_arr[]);
 void button_check(int);
 void queue_processor(int);
+void gear_selector;
 
 void setup() {
   Serial.begin(115200);
@@ -64,11 +66,11 @@ void setup() {
   }
   front_servo.attach(motor_pin[0]);
   rear_servo.attach(motor_pin[1]);
-  speed = EEPROM.read(64);
+  speed = EEPROM.read(64); //정차 전 단수 불러오기
   if ( (speed < 1) || (speed > 10) ) { //EEPROM이 초기화가 안됐다면 = 만약 speed(1~10)가 초기화안된상태라면
     speed = 3;
-    last_speed = 3;
   }
+  last_speed = speed; // 읽어온 단수
 }
 
 void loop() {
@@ -209,6 +211,13 @@ void queue_processor(int i) {
 
 }
 
+void gear_selector(){
+  static unsigned long gear_select_before = 0;
+  if ( (millis() - gear_select_before) >= gear_select_interval ) { 
+  }
+  
+}
+
 void lcd_update(float rpm_arr[]) {
   lcd.clear();
   lcd.setCursor(1, 1);   // 3,1에서 글쓰기 시작
@@ -240,6 +249,9 @@ void lcd_update(float rpm_arr[]) {
   else{// 1~6단일땐
     if (auto_mode == true){//자동모드일때 a표시
       lcd.print("A");
+    }
+    else{
+      lcd.print("M");
     }
     lcd.setCursor(11, 4);
     lcd.print(speed - 2);
