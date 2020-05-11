@@ -227,12 +227,7 @@ void lcd_update(float rpm_arr[]) {
   lcd.setCursor(1, 3);
   lcd.print("SPD");
   lcd.setCursor(11, 3);
-  if (auto_mode == true){//자동모드일때 a표시
-    lcd.print("A");
-    lcd.setCursor(11, 4);
-    lcd.print(speed - 2);
-  }
-  else if (speed >= 9){//h1,h2일땐
+  if (speed >= 9){//h1,h2일땐
     lcd.print("H");
     lcd.setCursor(11, 4);
     lcd.print(speed - 8);
@@ -241,6 +236,13 @@ void lcd_update(float rpm_arr[]) {
     lcd.print("L");
     lcd.setCursor(11, 4);
     lcd.print(speed);
+  }
+  else{// 1~6단일땐
+    if (auto_mode == true){//자동모드일때 a표시
+      lcd.print("A");
+    }
+    lcd.setCursor(11, 4);
+    lcd.print(speed - 2);
   }
   
 }
