@@ -165,7 +165,7 @@ void rpm_check(float rpm_arr[]) {
       }
     }
     if ( (speed >= 4) && (speed <= 8) ) { //2단 ~ 6단에서만 단 하강 검사
-      if (rpm_arr[0] > speed_lower_threshold[speed - 4]) { //rpm이 기준보다 낮으면,
+      if (rpm_arr[0] < speed_lower_threshold[speed - 4]) { //rpm이 기준보다 낮으면,
         speed -= 1;
       }
     }
