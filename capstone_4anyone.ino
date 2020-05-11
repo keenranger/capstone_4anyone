@@ -54,7 +54,7 @@ void stop_check(float rpm_arr[]);
 void rpm_check(float rpm_arr[]);
 void button_check(int);
 void queue_processor(int);
-void gear_selector;
+void gear_selector();
 
 void setup() {
   Serial.begin(115200);
@@ -78,6 +78,7 @@ void loop() {
     button_check(i);
     queue_processor(i);
   }
+  gear_selector();
 
   float * rpm_arr = rpm_calc();//실패하면 -1,-1로 구성된 값, 성공하면 최소 0이상
   if (rpm_arr[0] >= 0) {
@@ -214,8 +215,28 @@ void queue_processor(int i) {
 void gear_selector(){
   static unsigned long gear_select_before = 0;
   if ( (millis() - gear_select_before) >= gear_select_interval ) { 
+//    speed_gear[speed][0]
+    if (speed_gear[speed][0] > speed_gear[last_speed][0]){//앞바퀴 기어가 올라가는 거라면
+      front_servo.write(front_heighten_degree[speed_gear[speed][0] - 1]);
+    }
+    else if (speed_gear[speed][0] < speed_gear[last_speed][0]){//앞바퀴 기어가 내려가는 거라면
+      front_servo.write(front_lower_degree[speed_gear[speed][0]]);
+    }
+    else{//앞기어가 변하지않았다면
+      front_servo.write(front_degree[speed_gear[speed][0]]);
+    }
+    if (speed_gear[speed][1] > speed_gear[last_speed][1]){//뒷바퀴 기어가 올라가는 거라면
+      rear_servo.write(rear_heighten_degree[speed_gear[speed][1] -1]);
+    }
+    else if (speed_gear[speed][1] < speed_gear[last_speed][1]){//뒷바퀴 기어가 내려가는 거라면
+      rear_servo.write(rear_lower_degree[speed_gear[speed][1]]);
+    }
+    else{//뒷기어가 변하지않았다면
+      rear_servo.write(rear_degree[speed_gear[speed][1]]);
+    }
+    last_speed = speed; //마지막으로 lastspeed 에 현재 speed 넣어줌
+    gear_select_before = millis();
   }
-  
 }
 
 void lcd_update(float rpm_arr[]) {
