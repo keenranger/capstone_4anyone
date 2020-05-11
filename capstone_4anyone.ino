@@ -101,27 +101,6 @@ void lcd_init() {
   delay(500);
 }
 
-void lcd_update(float rpm_arr[]) {
-  lcd.clear();
-  lcd.setCursor(1, 1);   // 3,1에서 글쓰기 시작
-  lcd.print("Cadence");
-  lcd.setCursor(11, 1);   // 5,2에서 글쓰기 시작
-  lcd.print((int)rpm_arr[0]);
-  lcd.setCursor(15, 1);
-  lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
-  lcd.setCursor(1, 2);   // 5,3에서 글쓰기 시작
-  lcd.print("Velocity");
-  float bike_velocity = ((rpm_arr[1] * circumference * 60 ) / 1000); //60초동안, km니까 나누기천
-  lcd.setCursor(11, 2);
-  lcd.print((int)bike_velocity);
-  lcd.setCursor(15, 2);
-  lcd.print("km/h");
-  lcd.setCursor(1, 3);
-  lcd.print("SPD");
-  lcd.setCursor(11, 3);
-  lcd.print(speed);
-}
-
 float* rpm_calc() {
   static unsigned long rpm_update_before = 0;
   static float rpm_arr[2] = {0.0, 0.0};
@@ -228,4 +207,40 @@ void queue_processor(int i) {
 
   }
 
+}
+
+void lcd_update(float rpm_arr[]) {
+  lcd.clear();
+  lcd.setCursor(1, 1);   // 3,1에서 글쓰기 시작
+  lcd.print("Cadence");
+  lcd.setCursor(11, 1);   // 5,2에서 글쓰기 시작
+  lcd.print((int)rpm_arr[0]);
+  lcd.setCursor(15, 1);
+  lcd.print("rpm");      // lcd 모니터에 rpm 표시해주기
+  lcd.setCursor(1, 2);   // 5,3에서 글쓰기 시작
+  lcd.print("Velocity");
+  float bike_velocity = ((rpm_arr[1] * circumference * 60 ) / 1000); //60초동안, km니까 나누기천
+  lcd.setCursor(11, 2);
+  lcd.print((int)bike_velocity);
+  lcd.setCursor(15, 2);
+  lcd.print("km/h");
+  lcd.setCursor(1, 3);
+  lcd.print("SPD");
+  lcd.setCursor(11, 3);
+  if (auto_mode == true){//자동모드일때 a표시
+    lcd.print("A");
+    lcd.setCursor(11, 4);
+    lcd.print(speed - 2);
+  }
+  else if (speed >= 9){//h1,h2일땐
+    lcd.print("H");
+    lcd.setCursor(11, 4);
+    lcd.print(speed - 8);
+  }
+  else if (speed <= 2){//L1,L2일땐
+    lcd.print("L");
+    lcd.setCursor(11, 4);
+    lcd.print(speed);
+  }
+  
 }
