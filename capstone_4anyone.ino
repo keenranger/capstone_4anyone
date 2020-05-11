@@ -35,8 +35,8 @@ int speed_gear[10][2] = {{0, 6}, {0, 5}, {0, 4}, {0, 3}, {1, 3}, {1, 2}, {1, 1},
 int front_degree[3] = {100, 72, 58};
 int front_lower_degree[2] = {100, 76};
 int front_heighten_degree[2] = {68, 54};
-int rear_degree[7] = {47, 65, 75, 85, 98, 121, 145};
-int rear_lower_degree[6] = {47, 65, 73, 85, 98, 121};
+int rear_degree[7] = {57, 65, 75, 85, 98, 121, 145};
+int rear_lower_degree[6] = {57, 65, 73, 85, 98, 121};
 int rear_heighten_degree[6] = {65, 77, 85, 98, 121, 145};
 
 void rpm_fun1() {// 인터럽트로 카운트 증가하는 함수
